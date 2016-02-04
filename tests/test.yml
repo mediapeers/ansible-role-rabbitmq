@@ -4,4 +4,4 @@
   vars:
     rabbitmq_user: travis
   roles:
-    - ansible-role-rabbimq
+    - ansible-role-rabbitmq
