@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  become: true
+  vars:
+    rabbitmq_user: travis
+  roles:
+    - ansible-role-rabbimq
