@@ -49,9 +49,9 @@
 
 - name: install packages (Ubuntu default repo is used)
   apt:
-    name: "rabbitmq-server"
-    state: present
-  when: ansible_os_family == 'Debian' and not use_erlang_solutions_repo
+    name: rabbitmq-server
+    state: latest
+  when: not use_erlang_solutions_repo
 
 - name: shutdown rabbitmq to change cookie and conf file
   service:
