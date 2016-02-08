@@ -1,44 +1,43 @@
 ---
-# tasks file for rabbitmq
-- name: change hostname (clustering)
+# tasks file for rabbitmq role
+
+- name: Change hostname (for clustering)
   hostname:
     name: "{{ rabbitmq_hostname }}"
   when: rabbitmq_cluster
 
-- name: add erlang key (Ubuntu/Debian)
+- name: Add erlang apt repo key
   apt_key:
     url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
     state: present
-  when: ansible_os_family == 'Debian' and use_erlang_solutions_repo
+  when: use_erlang_solutions_repo
 
-- name: add erlang repo (Ubuntu)
+- name: Add erlang apt repo (for Ubuntu)
   apt_repository:
     repo: "deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib"
     state: present
     update_cache: yes
   when: ansible_distribution == 'Ubuntu' and use_erlang_solutions_repo
 
-- name: add erlang repo (Debian)
+- name: Add erlang apt repo (for Debian)
   apt_repository:
     repo: deb http://packages.erlang-solutions.com/debian wheezy contrib
     state: present
     update_cache: yes
-  when: ansible_distribution == 'Debian' and use_erlang_solutions_repo
+  when: ansible_distribution not 'Ubuntu' and use_erlang_solutions_repo
 
-- name: add rabbitmq key (Debian)
+- name: Add rabbitmq apt repo key
   apt_key:
     url: http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
     state: present
-  when: ansible_os_family == 'Debian'
 
-- name: add rabbitmq repo (Debian)
+- name: Add rabbitmq apt repo
   apt_repository:
     repo: deb http://www.rabbitmq.com/debian/ testing main
     state: present
     update_cache: yes
-  when: ansible_os_family == 'Debian'
 
-- name: install packages (Erlang Solutions repo enabled)
+- name: Install erlang and rabbitmq-server packages (from Erlang Solutions repo)
   apt:
     name: "{{ item }}"
     state: present
@@ -47,36 +46,56 @@
     - esl-erlang={{ erlang_version }}
     - rabbitmq-server={{ rabbitmq_version }}
 
-- name: install packages (Ubuntu default repo is used)
+- name: Install rabbitmq-server package (from RabbitMQ repo)
   apt:
     name: rabbitmq-server
     state: latest
   when: not use_erlang_solutions_repo
 
-- name: shutdown rabbitmq to change cookie and conf file
+- name: Extract rabbitmq installed package version
+  command: dpkg -s rabbitmq-server | grep Version: | grep -oE "[0-9\.]+" | head -1
+  register: rabbitmq_version
+
+- name: Output RabbitMQ version
+  debug:
+    msg: "{{ rabbitmq_version.stdout }}"
+
+- name: Place custom plugins into the plugins dir
+  file:
+    src: "{{item}}"
+    dest: /usr/lib/rabbitmq/lib/rabbitmq-server-{{rabbitmq_version.stdout}}/plugins/
+  with_items: rabbitmq_custom_plugins
+
+- name: Shutdown rabbitmq to change cookie and conf file
   service:
     name: rabbitmq-server
     state: stopped
 
-- name: cluster rabbitmq servers (clustering)
+- name: Cluster rabbitmq servers (clustering)
   include: cluster.yml
   when: rabbitmq_cluster
 
-- name: configure rabbitmq-server
+- name: Configure rabbitmq-server
   template:
     src: rabbitmq.config.j2
     dest: /etc/rabbitmq/rabbitmq.config
 
-- name: start rabbitmq-server
+- name: Start rabbitmq-server
   service:
     name: rabbitmq-server
     state: started
 
-- name: enable management plugin
+- name: Enable management plugin
   rabbitmq_plugin:
      name: rabbitmq_management
      state: enabled
   when: rabbitmq_manage
+
+- name: Enable custom plugins
+  rabbitmq_plugin:
+     name: "{{item}}"
+     state: enabled
+  with_items: rabbitmq_custom_plugins
 
 - name: Setup rabbitmq user with admin access
   rabbitmq_user:

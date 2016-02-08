@@ -23,6 +23,9 @@ rabbitmq_ec2_region: all
 # Must be set to true for clustering to work
 rabbitmq_use_longname: "false"
 
+# Plugins
+rabbitmq_custom_plugins: []
+
 # RabbitMQ user premissions
 rabbitmq_configure_priv: .*
 rabbitmq_read_priv: .*
