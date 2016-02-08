@@ -14,7 +14,11 @@
    %% {handshake_timeout, 10000},
 
     {log_levels, [{connection, info}]},
-    {loopback_users, [<<"{{ rabbitmq_loopback_user }}">>]},
+{% if rabbitmq_loopback_users|length > 0 %}
+    {loopback_users, [<<"{{ rabbitmq_loopback_users|join('">>, <<"') }}">>]},
+{% else %}
+    {loopback_users, []},
+{% endif %}
 
    %% Configuring SSL.
    %% See http://www.rabbitmq.com/ssl.html for full documentation.

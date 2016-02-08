@@ -31,7 +31,8 @@ rabbitmq_user_state: present
 
 # RabbitMQ (rabbitmq.config)
 rabbitmq_amqp_port: 5672
-rabbitmq_loopback_user: guest
+rabbitmq_loopback_users:
+  - guest
 rabbitmq_default_vhost: /
 rabbitmq_default_user: ansible
 rabbitmq_default_pass: ansible
