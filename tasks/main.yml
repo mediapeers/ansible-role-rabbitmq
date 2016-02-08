@@ -24,7 +24,7 @@
     repo: deb http://packages.erlang-solutions.com/debian wheezy contrib
     state: present
     update_cache: yes
-  when: ansible_distribution not 'Ubuntu' and use_erlang_solutions_repo
+  when: ansible_distribution != 'Ubuntu' and use_erlang_solutions_repo
 
 - name: Add rabbitmq apt repo key
   apt_key:
