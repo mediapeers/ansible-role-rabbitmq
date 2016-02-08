@@ -53,7 +53,7 @@
   when: not use_erlang_solutions_repo
 
 - name: Extract rabbitmq installed package version
-  command: "dpkg -s rabbitmq-server | grep Version: | grep -oE [0-9\.]+ | head -1"
+  command: "dpkg -s rabbitmq-server | grep Version: | grep -oE [0-9\\.]+ | head -1"
   register: rabbitmq_version
 
 - name: Output RabbitMQ version
