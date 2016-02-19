@@ -3,5 +3,7 @@
   become: true
   vars:
     rabbitmq_user: travis
+    rabbitmq_custom_plugins:
+      - rabbitmq_metronome
   roles:
     - ansible-role-rabbitmq

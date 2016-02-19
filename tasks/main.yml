@@ -52,18 +52,22 @@
     state: latest
   when: not use_erlang_solutions_repo
 
-- name: Extract rabbitmq installed package version
-  shell: dpkg -s rabbitmq-server | grep 'Version:' | grep -oE '[0-9\.]+' | head -1
-  register: rabbitmq_version
+- name: Get rabbitmq plugins dir
+  shell: rabbitmqctl environment | grep plugins_dir | grep -oE '".+"'
+  register: rabbit_plugins_dir_string
 
-- name: Output RabbitMQ version
+- name: Extract plugins_dir path and keep in variable
+  set_fact:
+    rabbit_plugins_dir: "{{ rabbit_plugins_dir_string.stdout[1:-1] }}"
+
+- name: Output RabbitMQ plugins path
   debug:
-    msg: "{{ rabbitmq_version.stdout }}"
+    msg: "{{ rabbit_plugins_dir }}"
 
 - name: Place custom plugins into the plugins dir
   file:
-    src: "{{item}}"
-    dest: /usr/lib/rabbitmq/lib/rabbitmq-server-{{rabbitmq_version.stdout}}/plugins/
+    src: "{{ item }}.ez"
+    dest: "{{ rabbit_plugins_dir }}"
   with_items: rabbitmq_custom_plugins
 
 - name: Shutdown rabbitmq to change cookie and conf file

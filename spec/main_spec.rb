@@ -21,10 +21,16 @@ describe "RabbitMQ server setup" do
 #    it { should be_running } # has to run with sudo
   end
 
-  describe file('/etc/rabbitmq/enabled_plugins') do
-    it { should be_file }
-#    if ANSIBLE_VARS.fetch('rabbitmq_manage', 'false').to_bool
-#      its(:content) { should include('rabbitmq_managements') }
-#    end
+  if ANSIBLE_VARS.fetch('rabbitmq_manage', 'false') == 'true'
+    describe command('sudo rabbitmq-plugins list') do
+      its(:stdout) { should include('[E*] rabbitmq_management') }
+    end
   end
+
+  ANSIBLE_VARS.fetch('rabbitmq_custom_plugins', []).each do |plugin|
+    describe command('sudo rabbitmq-plugins list') do
+      its(:stdout) { should include("[E*] #{plugin}") }
+    end
+  end
+
 end
