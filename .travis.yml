@@ -31,10 +31,10 @@ script:
   - "ansible-playbook -i tests/inventory tests/$SITE --connection=local"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
-  # Allow 3 'changes' for shutdown and startup and version detection
+  # Allow 4 'changes' for shutdown and startup and version detection
   - >
     ansible-playbook -i tests/inventory tests/$SITE --connection=local
-    | grep -q 'changed=3.*failed=0'
+    | grep -q 'changed=4.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
