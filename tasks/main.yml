@@ -65,7 +65,7 @@
     msg: "{{ rabbit_plugins_dir }}"
 
 - name: Place custom plugins into the plugins dir
-  file:
+  copy:
     src: "{{ item }}.ez"
     dest: "{{ rabbit_plugins_dir }}"
   with_items: rabbitmq_custom_plugins
