@@ -52,6 +52,11 @@
     state: latest
   when: not use_erlang_solutions_repo
 
+- name: Start rabbitmq-server in order to use the rabbitctl command in next task
+  service:
+    name: rabbitmq-server
+    state: started
+
 - name: Get rabbitmq plugins dir
   shell: rabbitmqctl environment | grep plugins_dir | grep -oE '".+"'
   register: rabbit_plugins_dir_string
