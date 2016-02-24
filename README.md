@@ -19,21 +19,21 @@ This role depends on no other roles.
 Variables you can set for this role:
 
 ```yaml
-# defaults file for rabbitmq
+# Enable management plugin:
 rabbitmq_manage: true
+# Setup clustering:
 rabbitmq_cluster: false
+# Create your own RabbitMQ user as specified on rabbitmq_default_user etc.
 make_rabbitmq_user: true
 
 # Cluster information
 # RabbitMQ (erlang.cookie)
-rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
+rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF # replace with your own!
 rabbitmq_nodename: "rabbit"
 rabbitmq_hostname: "{{ ansible_hostname }}.ec2.internal"
 rabbitmq_nodename_suffix: .ec2.internal
 rabbitmq_ec2_tag_key: Name
 rabbitmq_ec2_tag_value: rabbitmq
-# Must be set to true for clustering to work
-rabbitmq_use_longname: "false"
 
 # RabbitMQ user premissions
 rabbitmq_configure_priv: .*
@@ -44,7 +44,7 @@ rabbitmq_user_state: present
 # RabbitMQ (rabbitmq.config)
 rabbitmq_amqp_port: 5672
 rabbitmq_loopback_users:
- - guest # leave it empty to allow guest loging from anywhere
+ - guest # leave it empty to allow guest login from anywhere
 rabbitmq_default_vhost: /
 rabbitmq_default_user: ansible
 rabbitmq_default_pass: ansible
@@ -53,16 +53,10 @@ rabbitmq_disk_free_limit: 0.7
 rabbitmq_high_watermark: 0.4
 rabbitmq_high_watermark_paging: 0.5
 
-# User ansible is running as home dir
-user_home_folder: /root
-
-# AWS Key config
-app_settings:
-rabbitmq:
-  aws_access_key_id: not-a-real-key
-  aws_secret_access_key: not-a-real-key
+# AWS Key config (add your AWS AMI keys for a user that can read EC2 information)
+rabbitmq_cluster_aws_access_key_id: not-a-real-key
+rabbitmq_cluster_aws_secret_access_key: not-a-real-key
 ```
-
 
 ## Example Playbook
 Simple playbook that is enabled for use of clustering. If you are using rabbitmq_clustering you must gather facts. Never use the default key in production:
@@ -73,7 +67,10 @@ Simple playbook that is enabled for use of clustering. If you are using rabbitmq
   become: true
   vars:
     rabbitmq_cluster: true
-    rabbitmq_use_longname: true
+    rabbitmq_ec2_tag_values: 'My RabbitMQ Instance Name'
+    # AWS user needs ec2:Describe* permissions
+    rabbitmq_cluster_aws_access_key_id: ABC123
+    rabbitmq_cluster_aws_secret_access_key: 123456
   roles:
     - rabbitmq
 ```
@@ -91,8 +88,29 @@ If you are having issues open up all ports to everything for testing to ensure t
 
 Add the LC you have made to an Auto Scale Group (ASG) and set the number of servers to spin up.
 
+### IAM role for instance discovery on EC2
+IAM user should have this policy to read necessary information from EC2:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeInstances",
+        "ec2:DescribeRegions",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeTags"
+      ],
+      "Resource": "*",
+      "Effect": "Allow"
+    }
+  ]
+}
+```
+
 ## License
 BSD
 
 ## Author Information
-Produced by NoWait
+Created by NoWait, modified by Stefan Horning

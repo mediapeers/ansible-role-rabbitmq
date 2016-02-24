@@ -20,8 +20,6 @@ rabbitmq_ec2_tag_key: Name
 rabbitmq_ec2_tag_value: rabbitmq
 # Either 'all' or specific region, e.g. 'eu-central-1'
 rabbitmq_ec2_region: all
-# Must be set to true for clustering to work
-rabbitmq_use_longname: "false"
 
 # Plugins
 rabbitmq_custom_plugins: []
@@ -44,11 +42,6 @@ rabbitmq_disk_free_limit: 0.7
 rabbitmq_high_watermark: 0.4
 rabbitmq_high_watermark_paging: 0.5
 
-# User ansible is running as home dir
-user_home_folder: /root
-
 # AWS Key config
-app_settings:
-  rabbitmq:
-    aws_access_key_id: not-a-real-key
-    aws_secret_access_key: not-a-real-key
+rabbitmq_cluster_aws_access_key_id:     not-a-real-key
+rabbitmq_cluster_aws_secret_access_key: not-a-real-key
