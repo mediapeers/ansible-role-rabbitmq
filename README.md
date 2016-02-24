@@ -2,10 +2,11 @@
 
 
 # RabbitMQ
-RabbitMQ playbook that enables you to spin up a simple server or cluster them together.
-If you are integrating this into another repo make sure that rabbitmq goes in the roles folder and that you have a
-top level folder called lookup_plugins with find_by_tag.py in it or this play will not be able to auto cluster.
-Currently only EC2 is supported but feel free to request support for other services you may want to use this with.
+RabbitMQ playbook that enables you to spin up a simple server or cluster them together. Currently only clustering on EC2 is supported.
+If you are integrating this into another repo make sure that rabbitmq goes in the roles folder.
+
+Also note that this role has to be run on bootup of new instances to hook them into the cluster!
+Hence in cluster.yml ansible & boto gets installed.
 
 **Note:** this is a fork of https://github.com/nowait-tools/ansible-rabbitmq.
 
@@ -59,7 +60,8 @@ rabbitmq_cluster_aws_secret_access_key: not-a-real-key
 ```
 
 ## Example Playbook
-Simple playbook that is enabled for use of clustering. If you are using rabbitmq_clustering you must gather facts. Never use the default key in production:
+Simple playbook that is enabled for use of clustering. If you are using rabbitmq_clustering you must gather facts.
+Never use the default key in production:
 
 ```yaml
 - name: Install Rabbit MQ

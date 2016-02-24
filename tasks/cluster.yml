@@ -1,5 +1,26 @@
 ---
-- name: set rabbit conf file (clustering)
+
+- name: Install python-pip to install python packages (clustering)
+  apt:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - python-pip
+    # build dependencies to install ansible pip package
+    - libyaml-dev
+    - python-dev
+
+- name: Install boto & ansible to update clustering on the instance (clustering)
+  pip:
+    name: '{{ item }}'
+    state: latest
+  with_items:
+    - pip
+    - jinja2
+    - boto
+    - ansible
+
+- name: Set rabbit conf file (clustering)
   template:
     src: rabbitmq-env.conf.j2
     dest: /etc/rabbitmq/rabbitmq-env.conf
