@@ -34,8 +34,7 @@
 - name: Create ansible library dir in root folder
   file:
     path: /root/library
-    mode: directory
-    state: present
+    state: directory
 
 - name: Add ansible ec2_search module to library
   copy:
