@@ -29,38 +29,27 @@
   template:
     src: erlang.cookie.j2
     dest: /var/lib/rabbitmq/.erlang.cookie
+  notify: restart rabbitmq-server
 
-- name: get server hostnames (clustering)
-  ec2_search:
-    key: "{{ rabbitmq_ec2_tag_key }}"
-    value: "{{ rabbitmq_ec2_tag_value }}"
-    region: "{{ rabbitmq_ec2_region }}"
-  environment:
-    AWS_ACCESS_KEY_ID:      "{{ rabbitmq_cluster_aws_access_key_id }}"
-    AWS_SECRET_ACCESS_KEY:  "{{ rabbitmq_cluster_aws_secret_access_key }}"
-  register: nodes
+- name: Create ansible library dir in root folder
+  file:
+    path: /root/library
+    mode: directory
+    state: present
 
-- name: start rabbitmq-server (clustering)
-  service:
-    name: rabbitmq-server
-    state: started
+- name: Add ansible ec2_search module to library
+  copy:
+    src: ec2_search.py
+    dest: /root/library/ec2_search.py
 
-- name: turn off rabbitmq but not the erlang process (clustering)
-  command: "{{ item }}"
-  with_items:
-    - rabbitmqctl stop_app
-    - rabbitmqctl reset
+- name: Place playbook using this role into /root
+  template:
+    src: rabbit_bootup.yml.j2
+    dest: /root/rabbit_bootup.yml
 
-- name: cluster all known nodes (clustering)
-  command: "rabbitmqctl join_cluster rabbit@{{ item['hostname'] }}{{ rabbitmq_nodename_suffix }}"
-  with_items: "{{ nodes['info']|default([]) }}"
-  when: nodes
-  ignore_errors: yes
+- name: Add ansible execution to bootup of instance (hooks intance up to cluster)
+  lineinfile:
+    dest: /etc/rc.local
+    insterbefore: 'exit 0'
+    line: 'cd /root/ && ansible-playbook rabbit_bootup.yml >> /var/log/rc.local.log 2>&1'
 
-- name: turn back on rabbitmq
-  command: rabbitmqctl start_app
-
-- name: stop rabbitmq-server (clustering)
-  service:
-    name: rabbitmq-server
-    state: stopped
