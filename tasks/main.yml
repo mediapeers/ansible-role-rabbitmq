@@ -73,7 +73,7 @@
   copy:
     src: "{{ item }}.ez"
     dest: "{{ rabbit_plugins_dir }}"
-  with_items: rabbitmq_custom_plugins
+  with_items: '{{ rabbitmq_custom_plugins }}'
 
 - name: Cluster rabbitmq servers (clustering)
   include: cluster.yml
@@ -95,7 +95,7 @@
   rabbitmq_plugin:
      name: "{{item}}"
      state: enabled
-  with_items: rabbitmq_custom_plugins
+  with_items: '{{ rabbitmq_custom_plugins }}'
 
 - name: Setup rabbitmq user with admin access
   rabbitmq_user:
