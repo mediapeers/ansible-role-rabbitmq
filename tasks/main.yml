@@ -70,6 +70,11 @@
     dest: "{{ rabbit_plugins_dir }}"
   with_items: '{{ rabbitmq_custom_plugins }}'
 
+- name: Stop rabbitmq-server to change cookie and config file
+  service:
+    name: rabbitmq-server
+    state: stopped
+
 - name: Cluster rabbitmq servers (clustering)
   include: cluster.yml
   when: rabbitmq_cluster
@@ -78,7 +83,11 @@
   template:
     src: rabbitmq.config.j2
     dest: /etc/rabbitmq/rabbitmq.config
-  notify: restart rabbitmq-server
+
+- name: Start rabbitmq-server to enable plugins and add users
+  service:
+    name: rabbitmq-server
+    state: started
 
 - name: Enable management plugin
   rabbitmq_plugin:

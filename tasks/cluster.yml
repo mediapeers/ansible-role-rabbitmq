@@ -29,7 +29,6 @@
   template:
     src: erlang.cookie.j2
     dest: /var/lib/rabbitmq/.erlang.cookie
-  notify: restart rabbitmq-server
 
 - name: Create ansible library dir in root folder
   file:
