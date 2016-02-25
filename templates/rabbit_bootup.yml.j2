@@ -15,7 +15,7 @@
       register: nodes
 
     - name: turn off rabbitmq but not the erlang process (clustering)
-      command: "{{ item }}"
+      command: "{{ '{{' }} item {{ '}}' }}"
       with_items:
         - rabbitmqctl stop_app
         - rabbitmqctl reset

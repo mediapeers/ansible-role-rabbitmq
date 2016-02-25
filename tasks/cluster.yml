@@ -49,6 +49,6 @@
 - name: Add ansible execution to bootup of instance (hooks intance up to cluster)
   lineinfile:
     dest: /etc/rc.local
-    insterbefore: 'exit 0'
+    insertbefore: 'exit 0'
     line: 'cd /root/ && ansible-playbook rabbit_bootup.yml >> /var/log/rc.local.log 2>&1'
 
