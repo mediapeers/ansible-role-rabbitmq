@@ -50,5 +50,5 @@
   lineinfile:
     dest: /etc/rc.local
     insertbefore: 'exit 0'
-    line: 'cd /root/ && ansible-playbook rabbit_bootup.yml >> /var/log/rc.local.log 2>&1'
+    line: 'cd /root/ && /usr/local/bin/ansible-playbook rabbit_bootup.yml >> /var/log/rc.local.log 2>&1'
 
