@@ -1,5 +1,9 @@
 ---
 
+- name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME (clustering)
+  hostname:
+    name: "{{ rabbitmq_hostname }}"
+
 - name: Install python-pip to install python packages (clustering)
   apt:
     name: '{{ item }}'
@@ -20,7 +24,7 @@
     - boto
     - ansible
 
-- name: Set rabbit conf file (clustering)
+- name: Set rabbit environment file (clustering)
   template:
     src: rabbitmq-env.conf.j2
     dest: /etc/rabbitmq/rabbitmq-env.conf

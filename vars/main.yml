@@ -1,6 +1,3 @@
 ---
 # vars file for rabbitmq role
 
-# Must be set to true for clustering to work
-rabbitmq_use_longname: "{{ rabbitmq_cluster }}"
-
