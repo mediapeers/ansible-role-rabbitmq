@@ -2,7 +2,7 @@
 
 - name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME (clustering)
   hostname:
-    name: "{{ rabbitmq_hostname }}"
+    name: "{{ ansible_hostname }}{{ rabbitmq_nodename_suffix }}"
 
 - name: Install python-pip to install python packages (clustering)
   apt:

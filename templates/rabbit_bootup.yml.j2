@@ -4,6 +4,10 @@
   hosts: localhost
   tasks:
 
+    - name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME (clustering)
+      hostname:
+        name: "{{ ansible_hostname }}{{ rabbitmq_nodename_suffix }}"
+
     - name: get server hostnames (clustering)
       ec2_search:
         key: "{{ rabbitmq_ec2_tag_key }}"
@@ -21,10 +25,10 @@
         - rabbitmqctl reset
 
     - name: cluster all known nodes (clustering)
-      command: "rabbitmqctl join_cluster rabbit@{{ '{{' }} item['hostname'] {{ '}}' }}{{ rabbitmq_nodename_suffix }}"
+      command: "rabbitmqctl join_cluster {{ rabbitmq_nodename }}@{{ '{{' }} item['hostname'] {{ '}}' }}{{ rabbitmq_nodename_suffix }}"
       with_items: "{{ '{{' }} nodes['info']|default([]) {{ '}}' }}"
       when: nodes
       ignore_errors: yes
 
-    - name: turn back on rabbitmq
+    - name: turn rabbitmq back on
       command: rabbitmqctl start_app

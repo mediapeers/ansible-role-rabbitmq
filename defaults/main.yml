@@ -14,7 +14,6 @@ rabbitmq_version: "3.6.0-1"
 # RabbitMQ (erlang.cookie)
 rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
 rabbitmq_nodename: "rabbit"
-rabbitmq_hostname: "{{ ansible_hostname }}.ec2.internal"
 rabbitmq_nodename_suffix: .ec2.internal
 rabbitmq_ec2_tag_key: Name
 rabbitmq_ec2_tag_value: rabbitmq

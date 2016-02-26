@@ -89,6 +89,10 @@
     name: rabbitmq-server
     state: started
 
+- name: Wait 2 seconds to ensure rabbit is up
+  pause:
+    seconds: 2
+
 - name: Enable management plugin
   rabbitmq_plugin:
      name: rabbitmq_management
