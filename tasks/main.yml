@@ -89,21 +89,18 @@
     name: rabbitmq-server
     state: started
 
-- name: Wait 2 seconds to ensure rabbit is up
-  pause:
-    seconds: 2
+- name: Enable custom plugins
+  rabbitmq_plugin:
+    name: "{{item}}"
+    state: enabled
+  with_items: '{{ rabbitmq_custom_plugins }}'
 
 - name: Enable management plugin
   rabbitmq_plugin:
-     name: rabbitmq_management
-     state: enabled
+    new_only: yes # keeps previously installed plugins
+    name: rabbitmq_management
+    state: enabled
   when: rabbitmq_manage
-
-- name: Enable custom plugins
-  rabbitmq_plugin:
-     name: "{{item}}"
-     state: enabled
-  with_items: '{{ rabbitmq_custom_plugins }}'
 
 - name: Setup rabbitmq user with admin access
   rabbitmq_user:

@@ -6,7 +6,7 @@
 
     - name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME (clustering)
       hostname:
-        name: "{{ ansible_hostname }}{{ rabbitmq_nodename_suffix }}"
+        name: "{{ '{{' }} ansible_hostname {{ '}}' }}{{ rabbitmq_nodename_suffix }}"
 
     - name: get server hostnames (clustering)
       ec2_search:

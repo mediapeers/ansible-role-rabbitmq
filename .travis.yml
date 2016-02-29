@@ -10,15 +10,24 @@ env:
 
 before_install:
   - sudo apt-get update -qq
+  # clean up all the weird rubies (none coming from apt packages) from system
+  - sudo rm /usr/bin/ruby /usr/bin/gem
+  - sudo rm -r /home/travis/.rvm/
 
 install:
-  # Install Ansible.
+  # Install ruby for and serverspec gem as root
+  - sudo apt-get install -y ruby2.0
+  - sudo ln -s /usr/bin/ruby2.0 /usr/bin/ruby
+  - sudo ln -s /usr/bin/gem2.0 /usr/bin/gem
+  - sudo ln -s /usr/bin/rake2.0 /usr/bin/rake
+
+  # Install Ansible through pip
   - pip install ansible
   - ansible --version
 
   # Install serverspec
-  - ruby -v
-  - gem install serverspec
+  - sudo ruby -v
+  - sudo gem install serverspec
 
   # Add ansible.cfg to pick up roles path.
   - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"

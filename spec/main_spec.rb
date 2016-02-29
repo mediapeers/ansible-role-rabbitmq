@@ -18,10 +18,10 @@ describe "RabbitMQ server setup" do
 
   describe service('rabbitmq-server') do
     it { should be_enabled }
-#    it { should be_running } # has to run with sudo
+    it { should be_running } # has to run with sudo
   end
 
-  if ANSIBLE_VARS.fetch('rabbitmq_manage', 'false') == 'true'
+  if ANSIBLE_VARS.fetch('rabbitmq_manage', false)
     describe command('sudo rabbitmq-plugins list') do
       its(:stdout) { should include('[E*] rabbitmq_management') }
     end
@@ -33,4 +33,18 @@ describe "RabbitMQ server setup" do
     end
   end
 
+  if ANSIBLE_VARS.fetch('rabbitmq_cluster', false)
+    describe file('/root/library/ec2_search.yml') do
+      it { should be_file }
+    end
+
+    describe file('/root/rabbit_boot.yml') do
+      it { should be_file }
+      its(:content) { should include("name \"{{ ansible_hostname }}#{ANSIBLE_VARS.fetch('rabbitmq_nodename_suffix', 'FAIL')}\"") }
+    end
+
+    describe file('/etc/rc.local') do
+      its(:content) { should include('cd /root/ && /usr/local/bin/ansible-playbook rabbit_bootup.yml') }
+    end
+  end
 end

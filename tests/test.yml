@@ -2,7 +2,8 @@
 - hosts: localhost
   become: true
   vars:
-    rabbitmq_user: travis
+    rabbitmq_default_user: travis
+    rabbitmq_cluster: true
     rabbitmq_custom_plugins:
       - rabbitmq_metronome
   roles:
