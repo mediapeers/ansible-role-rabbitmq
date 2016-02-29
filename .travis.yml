@@ -12,7 +12,6 @@ before_install:
   - sudo apt-get update -qq
   # clean up all the weird rubies (none coming from apt packages) from system
   - sudo rm /usr/bin/ruby /usr/bin/gem
-  - sudo rm -r /home/travis/.rvm/
 
 install:
   # Install ruby for and serverspec gem as root
@@ -48,4 +47,4 @@ script:
     || (echo 'Idempotence test: fail' && exit 1)
 
   # Runnin serverspec
-  - rake spec
+  - sudo rake spec
