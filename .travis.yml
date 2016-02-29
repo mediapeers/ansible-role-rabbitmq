@@ -24,6 +24,8 @@ install:
   - pip install ansible
   - ansible --version
 
+  - hostname
+
   # Install serverspec
   - sudo ruby -v
   - sudo gem install serverspec

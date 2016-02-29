@@ -4,7 +4,7 @@
   hosts: localhost
   tasks:
 
-    - name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME (clustering)
+    - name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME
       hostname:
         name: "{{ '{{' }} ansible_hostname {{ '}}' }}{{ rabbitmq_nodename_suffix }}"
 
@@ -24,8 +24,8 @@
         - rabbitmqctl stop_app
         - rabbitmqctl reset
 
-    - name: cluster all known nodes (clustering)
-      command: "rabbitmqctl join_cluster {{ rabbitmq_nodename }}@{{ '{{' }} item['hostname'] {{ '}}' }}{{ rabbitmq_nodename_suffix }}"
+    - name: Try to join existing cluster (using all known nodes)
+      command: "rabbitmqctl join_cluster rabbit@{{ '{{' }} item['hostname'] {{ '}}' }}{{ rabbitmq_nodename_suffix }}"
       with_items: "{{ '{{' }} nodes['info']|default([]) {{ '}}' }}"
       when: nodes
       ignore_errors: yes
