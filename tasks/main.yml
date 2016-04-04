@@ -32,6 +32,11 @@
     state: present
     update_cache: yes
 
+- name: Show hostname for RabbitMQ instance at time of installation
+  shell: "hostname"
+  register: hostname_return
+- debug: msg={{ hostname_return.sdtout }}
+
 - name: Install erlang and rabbitmq-server packages (from Erlang Solutions repo)
   apt:
     name: "{{ item }}"
