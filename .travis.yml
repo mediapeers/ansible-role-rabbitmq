@@ -41,10 +41,10 @@ script:
   - "ansible-playbook -i tests/inventory tests/$SITE --connection=local"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
-  # Allow 5 'changes' for restarts and rabbit command interactions
+  # Allow 6 'changes' for restarts and rabbit command interactions
   - >
     ansible-playbook -i tests/inventory tests/$SITE --connection=local
-    | grep -q 'changed=5.*failed=0'
+    | grep -q 'changed=6.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
