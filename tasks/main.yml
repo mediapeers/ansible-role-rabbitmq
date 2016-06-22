@@ -23,7 +23,7 @@
 
 - name: Add rabbitmq apt repo key
   apt_key:
-    url: http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+    url: https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
     state: present
 
 - name: Add rabbitmq apt repo
