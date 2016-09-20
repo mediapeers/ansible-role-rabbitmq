@@ -113,3 +113,8 @@
     tags: "{{ rabbitmq_default_user_tags }}"
     state: "{{ rabbitmq_user_state }}"
   when: make_rabbitmq_user
+
+- name: Make sure rabbitmq-server starts on boot
+  service:
+    name: rabbitmq-server
+    state: enabled
