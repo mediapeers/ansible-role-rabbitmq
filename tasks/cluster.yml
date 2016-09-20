@@ -4,17 +4,21 @@
   hostname:
     name: "{{ ansible_hostname }}{{ rabbitmq_nodename_suffix }}"
 
-- name: Install python-pip to install python packages (clustering)
+- name: Install python-pip and other tools to install python packages/ansible
   apt:
     name: '{{ item }}'
     state: present
   with_items:
+    - git-core
+    - build-essential
     - python-pip
     # build dependencies to install ansible pip package
     - libyaml-dev
+    - libssl-dev
+    - libffi-dev
     - python-dev
 
-- name: Install boto & ansible to update clustering on the instance (clustering)
+- name: Install boto & ansible to update clustering on the instance
   pip:
     name: '{{ item }}'
     state: latest
