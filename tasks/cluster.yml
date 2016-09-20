@@ -24,25 +24,30 @@
     - boto
     - ansible
 
-- name: Set rabbit environment file (clustering)
-  template:
-    src: rabbitmq-env.conf.j2
-    dest: /etc/rabbitmq/rabbitmq-env.conf
 
-- name: ensure cookies are the same between all envs (clustering)
-  template:
-    src: erlang.cookie.j2
-    dest: /var/lib/rabbitmq/.erlang.cookie
+- name: Clone this role onto remote machine to be executed on boot
+  git:
+    repo: https://github.com/mediapeers/ansible-role-rabbitmq.git
+    dest: /root/roles/mediapeers.rabbitmq
+    version: master
+    recursive: yes
+    depth: 5
+    accept_hostkey: yes
 
 - name: Create ansible library dir in root folder
   file:
     path: /root/library
     state: directory
 
-- name: Add ansible ec2_search module to library
+- name: Copy ec2_search module into library dir
   copy:
     src: ec2_search.py
     dest: /root/library/ec2_search.py
+
+- name: Put ansible.cfg into root dir to configure ansible library/role dirs
+  copy:
+    src: ansible.cfg
+    dest: /root/ansible.cfg
 
 - name: Place playbook using this role into /root
   template:

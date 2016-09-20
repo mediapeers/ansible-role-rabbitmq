@@ -2,13 +2,18 @@
 
 - name: Playbook to execute on RabbitMQ instance bootup connect to cluster
   hosts: localhost
-  tasks:
-
+  vars:
+    rabbitmq_cluster: false
+  pre_tasks:
     - name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME
       hostname:
         name: "{{ '{{' }} ansible_hostname {{ '}}' }}{{ rabbitmq_nodename_suffix }}"
 
-    - name: get server hostnames (clustering)
+  roles:
+    - mediapeers.rabbitmq
+  tasks:
+
+    - name: Get server hostnames for clustering
       ec2_search:
         key: "{{ rabbitmq_ec2_tag_key }}"
         value: "{{ rabbitmq_ec2_tag_value }}"
@@ -18,7 +23,7 @@
         AWS_SECRET_ACCESS_KEY:  "{{ rabbitmq_cluster_aws_secret_access_key }}"
       register: nodes
 
-    - name: turn off rabbitmq but not the erlang process (clustering)
+    - name: Turn off rabbitmq but not the erlang process (clustering)
       command: "{{ '{{' }} item {{ '}}' }}"
       with_items:
         - rabbitmqctl stop_app
