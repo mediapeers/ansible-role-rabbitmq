@@ -1,8 +1,7 @@
 ---
-
-- name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME (clustering)
-  hostname:
-    name: "{{ ansible_hostname }}{{ rabbitmq_nodename_suffix }}"
+# Play to prepare instance to install RabbitMQ on itself when bootet. Setting it up for clustering.
+# RabbitMQ can't be install prior first boot (on an image) as it messes with system state to make later cluster
+# setup impossible as hostname changes on a fresh boot on AWS, so setup can't be on the AMI.
 
 - name: Install python-pip and other tools to install python packages/ansible
   apt:
