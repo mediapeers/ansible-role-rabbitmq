@@ -52,8 +52,7 @@
   git:
     repo: https://github.com/mediapeers/ansible-role-rabbitmq.git
     dest: /root/roles/mediapeers.rabbitmq
-    # TODO: set to master later!
-    version: 'make_clustering_work'
+    version: master
     recursive: yes
     depth: 5
     accept_hostkey: yes
