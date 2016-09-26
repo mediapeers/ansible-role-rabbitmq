@@ -1,20 +1,44 @@
 ---
+# Play to prepare instance to install RabbitMQ on itself when bootet. Setting it up for clustering.
+# RabbitMQ can't be install prior first boot (on an image) as it messes with system state to make later cluster
+# setup impossible as hostname changes on a fresh boot on AWS, so setup can't be on the AMI.
 
-- name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME (clustering)
-  hostname:
-    name: "{{ ansible_hostname }}{{ rabbitmq_nodename_suffix }}"
 
-- name: Install python-pip to install python packages (clustering)
+- name: Create Rabbit etc & var dirs manually as we only install Rabbit later
+  file:
+    path: '{{ item }}'
+    state: directory
+    mode: 0755
+  with_items:
+    - /etc/rabbitmq
+    - /var/lib/rabbitmq
+
+- name: Add Rabbit ENV config file to make sure full hostnames are used
+  template:
+    src: rabbitmq-env.conf.j2
+    dest: /etc/rabbitmq/rabbitmq-env.conf
+
+- name: Ensure erlang cookies are the same among all instances
+  template:
+    src: erlang.cookie.j2
+    dest: /var/lib/rabbitmq/.erlang.cookie
+    mode: 0400
+
+- name: Install python-pip and other tools to install python packages/ansible
   apt:
     name: '{{ item }}'
     state: present
   with_items:
+    - git-core
+    - build-essential
     - python-pip
     # build dependencies to install ansible pip package
     - libyaml-dev
+    - libssl-dev
+    - libffi-dev
     - python-dev
 
-- name: Install boto & ansible to update clustering on the instance (clustering)
+- name: Install boto & ansible to update clustering on the instance
   pip:
     name: '{{ item }}'
     state: latest
@@ -24,25 +48,29 @@
     - boto
     - ansible
 
-- name: Set rabbit environment file (clustering)
-  template:
-    src: rabbitmq-env.conf.j2
-    dest: /etc/rabbitmq/rabbitmq-env.conf
-
-- name: ensure cookies are the same between all envs (clustering)
-  template:
-    src: erlang.cookie.j2
-    dest: /var/lib/rabbitmq/.erlang.cookie
+- name: Clone this role onto remote machine to be executed on boot
+  git:
+    repo: https://github.com/mediapeers/ansible-role-rabbitmq.git
+    dest: /root/roles/mediapeers.rabbitmq
+    version: master
+    recursive: yes
+    depth: 5
+    accept_hostkey: yes
 
 - name: Create ansible library dir in root folder
   file:
     path: /root/library
     state: directory
 
-- name: Add ansible ec2_search module to library
+- name: Copy ec2_search module into library dir
   copy:
     src: ec2_search.py
     dest: /root/library/ec2_search.py
+
+- name: Put ansible.cfg into root dir to configure ansible library/role dirs
+  copy:
+    src: ansible.cfg
+    dest: /root/ansible.cfg
 
 - name: Place playbook using this role into /root
   template:

@@ -1,0 +1,116 @@
+# Tasks for installing and configuring RabbitMQ and custom plugins on the system
+
+- name: Add erlang apt repo key
+  apt_key:
+    url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+    state: present
+  when: use_erlang_solutions_repo
+
+- name: Add erlang apt repo (for Ubuntu)
+  apt_repository:
+    repo: "deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == 'Ubuntu' and use_erlang_solutions_repo
+
+- name: Add erlang apt repo (for Debian)
+  apt_repository:
+    repo: deb http://packages.erlang-solutions.com/debian wheezy contrib
+    state: present
+    update_cache: yes
+  when: ansible_distribution != 'Ubuntu' and use_erlang_solutions_repo
+
+- name: Add rabbitmq apt repo key
+  apt_key:
+    url: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+    state: present
+
+- name: Add rabbitmq apt repo
+  apt_repository:
+    repo: deb http://www.rabbitmq.com/debian/ testing main
+    state: present
+    update_cache: yes
+
+- name: Show hostname for RabbitMQ instance at time of installation
+  shell: "hostname"
+  register: hostname_return
+- debug: msg={{ hostname_return.stdout }}
+
+- name: Install erlang and rabbitmq-server packages (from Erlang Solutions repo)
+  apt:
+    name: "{{ item }}"
+    state: present
+  when: ansible_os_family == 'Debian' and use_erlang_solutions_repo
+  with_items:
+    - esl-erlang={{ erlang_version }}
+    - rabbitmq-server={{ rabbitmq_version }}
+
+- name: Install rabbitmq-server package (from RabbitMQ repo)
+  apt:
+    name: rabbitmq-server
+    state: latest
+  when: not use_erlang_solutions_repo
+
+- name: Start rabbitmq-server in order to use the rabbitctl command in next task
+  service:
+    name: rabbitmq-server
+    state: started
+
+- name: Get rabbitmq plugins dir
+  shell: rabbitmqctl environment | grep plugins_dir | grep -oE '".+"'
+  register: rabbit_plugins_dir_string
+
+- name: Extract plugins_dir path and keep in variable
+  set_fact:
+    rabbit_plugins_dir: "{{ rabbit_plugins_dir_string.stdout[1:-1] }}"
+
+- name: Output RabbitMQ plugins path
+  debug:
+    msg: "{{ rabbit_plugins_dir }}"
+
+- name: Place custom plugins into the plugins dir
+  copy:
+    src: "{{ item }}.ez"
+    dest: "{{ rabbit_plugins_dir }}"
+  with_items: '{{ rabbitmq_custom_plugins }}'
+
+- name: Stop rabbitmq-server to add config file
+  service:
+    name: rabbitmq-server
+    state: stopped
+
+- name: Configure rabbitmq-server
+  template:
+    src: rabbitmq.config.j2
+    dest: /etc/rabbitmq/rabbitmq.config
+
+- name: Start rabbitmq-server to enable plugins and add users
+  service:
+    name: rabbitmq-server
+    state: started
+    enabled: yes
+
+- name: Enable custom plugins
+  rabbitmq_plugin:
+    name: "{{item}}"
+    state: enabled
+  with_items: '{{ rabbitmq_custom_plugins }}'
+
+- name: Enable management plugin
+  rabbitmq_plugin:
+    new_only: yes # keeps previously installed plugins
+    name: rabbitmq_management
+    state: enabled
+  when: rabbitmq_manage
+
+- name: Setup rabbitmq user with admin access
+  rabbitmq_user:
+    user: "{{ rabbitmq_default_user }}"
+    password: "{{ rabbitmq_default_pass }}"
+    vhost: "{{ rabbitmq_default_vhost }}"
+    configure_priv: "{{ rabbitmq_configure_priv }}"
+    read_priv: "{{ rabbitmq_read_priv }}"
+    write_priv: "{{ rabbitmq_write_priv }}"
+    tags: "{{ rabbitmq_default_user_tags }}"
+    state: "{{ rabbitmq_user_state }}"
+  when: make_rabbitmq_user
