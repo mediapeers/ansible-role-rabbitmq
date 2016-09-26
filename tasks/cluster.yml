@@ -3,6 +3,16 @@
 # RabbitMQ can't be install prior first boot (on an image) as it messes with system state to make later cluster
 # setup impossible as hostname changes on a fresh boot on AWS, so setup can't be on the AMI.
 
+- name: Add Rabbit ENV config file to make sure full hostnames are used
+  template:
+    src: rabbitmq-env.conf.j2
+    dest: /etc/rabbitmq/rabbitmq-env.conf
+
+- name: Ensure erlang cookies are the same among all instances
+  template:
+    src: erlang.cookie.j2
+    dest: /var/lib/rabbitmq/.erlang.cookie
+
 - name: Install python-pip and other tools to install python packages/ansible
   apt:
     name: '{{ item }}'
@@ -27,12 +37,12 @@
     - boto
     - ansible
 
-
 - name: Clone this role onto remote machine to be executed on boot
   git:
     repo: https://github.com/mediapeers/ansible-role-rabbitmq.git
     dest: /root/roles/mediapeers.rabbitmq
-    version: master
+    # TODO: set to master later!
+    version: 'make_clustering_work'
     recursive: yes
     depth: 5
     accept_hostkey: yes

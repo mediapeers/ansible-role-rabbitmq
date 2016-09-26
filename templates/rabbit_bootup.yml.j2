@@ -8,7 +8,7 @@
     rabbitmq_ec2_tag_key: {{ rabbitmq_ec2_tag_key }}
     rabbitmq_ec2_tag_value: {{ rabbitmq_ec2_tag_value }}
     rabbitmq_amqp_port: {{ rabbitmq_amqp_port }}
-    rabbitmq_custom_plugins: {{ rabbitmq_custom_plugins }}
+    rabbitmq_custom_plugins: {{ rabbitmq_custom_plugins|to_yaml }}
     rabbitmq_default_user: {{ rabbitmq_default_user }}
     rabbitmq_default_pass: {{ rabbitmq_default_pass }}
   pre_tasks:
