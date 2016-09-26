@@ -22,6 +22,7 @@
   template:
     src: erlang.cookie.j2
     dest: /var/lib/rabbitmq/.erlang.cookie
+    mode: 0400
 
 - name: Install python-pip and other tools to install python packages/ansible
   apt:

@@ -74,7 +74,7 @@
     dest: "{{ rabbit_plugins_dir }}"
   with_items: '{{ rabbitmq_custom_plugins }}'
 
-- name: Stop rabbitmq-server to change cookie and config file
+- name: Stop rabbitmq-server to add config file
   service:
     name: rabbitmq-server
     state: stopped
