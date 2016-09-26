@@ -3,6 +3,16 @@
 # RabbitMQ can't be install prior first boot (on an image) as it messes with system state to make later cluster
 # setup impossible as hostname changes on a fresh boot on AWS, so setup can't be on the AMI.
 
+
+- name: Create Rabbit etc & var dirs manually as we only install Rabbit later
+  file:
+    path: '{{ item }}'
+    state: directory
+    mode: 0755
+  with_items:
+    - /etc/rabbitmq
+    - /var/rabbitmq
+
 - name: Add Rabbit ENV config file to make sure full hostnames are used
   template:
     src: rabbitmq-env.conf.j2
