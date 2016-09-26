@@ -4,6 +4,12 @@
   hosts: localhost
   vars:
     rabbitmq_cluster: false
+    rabbitmq_ec2_tag_key: {{ rabbitmq_ec2_tag_key }}
+    rabbitmq_ec2_tag_value: {{ rabbitmq_ec2_tag_value }}
+    rabbitmq_amqp_port: {{ rabbitmq_amqp_port }}
+    rabbitmq_custom_plugins: {{ rabbitmq_custom_plugins }}
+    rabbitmq_default_user: {{ rabbitmq_default_user }}
+    rabbitmq_default_user: {{ rabbitmq_default_password }}
   pre_tasks:
     - name: Change hostname to the FQDN which is used when setting RABBITMQ_USE_LONGNAME
       hostname:
