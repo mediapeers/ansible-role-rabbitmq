@@ -11,7 +11,7 @@
     mode: 0755
   with_items:
     - /etc/rabbitmq
-    - /var/rabbitmq
+    - /var/lib/rabbitmq
 
 - name: Add Rabbit ENV config file to make sure full hostnames are used
   template:
