@@ -58,7 +58,7 @@
 
 - name: Get rabbitmq plugins dir
   shell: rabbitmqctl environment | grep -A 1 plugins_dir | grep -oE '"/.+"' | cut -d ':' -f 2 | tr -d '"'
-  register: rabbit_plugins_dir_string
+  register: rabbit_plugins_dir
 
 - name: Output RabbitMQ plugins path
   debug:
