@@ -57,21 +57,22 @@
     state: started
 
 - name: Get rabbitmq plugins dir
-  shell: rabbitmqctl environment | grep plugins_dir | grep -oE '".+"'
-  register: rabbit_plugins_dir_string
-
-- name: Extract plugins_dir path and keep in variable
-  set_fact:
-    rabbit_plugins_dir: "{{ rabbit_plugins_dir_string.stdout[1:-1] }}"
+  shell: rabbitmqctl environment | grep -A 1 plugins_dir | grep -oE '"/.+"' | cut -d ':' -f 2 | tr -d '"'
+  register: rabbit_plugins_dir
 
 - name: Output RabbitMQ plugins path
   debug:
-    msg: "{{ rabbit_plugins_dir }}"
+    msg: "{{ rabbit_plugins_dir.stdout }}"
+
+- name: Plugins to install debug output
+  debug:
+    msg: "files/{{ item }}.ez -> {{ rabbit_plugins_dir.stdout }}"
+  with_items: '{{ rabbitmq_custom_plugins }}'
 
 - name: Place custom plugins into the plugins dir
   copy:
     src: "{{ item }}.ez"
-    dest: "{{ rabbit_plugins_dir }}"
+    dest: "{{ rabbit_plugins_dir.stdout }}"
   with_items: '{{ rabbitmq_custom_plugins }}'
 
 - name: Stop rabbitmq-server to add config file
