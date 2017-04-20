@@ -64,6 +64,11 @@
   debug:
     msg: "{{ rabbit_plugins_dir }}"
 
+- name: Plugins to install debug output
+  debug:
+    msg: "files/{{ item }}.ez -> {{ rabbit_plugins_dir }}"
+  with_items: '{{ rabbitmq_custom_plugins }}'
+
 - name: Place custom plugins into the plugins dir
   copy:
     src: "{{ item }}.ez"

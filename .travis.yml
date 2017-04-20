@@ -21,7 +21,7 @@ install:
   - sudo ln -s /usr/bin/rake2.0 /usr/bin/rake
 
   # Install Ansible through pip
-  - pip install ansible==2.2.1.0
+  - pip install ansible
   - ansible --version
 
   - hostname
