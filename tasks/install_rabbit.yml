@@ -57,12 +57,8 @@
     state: started
 
 - name: Get rabbitmq plugins dir
-  shell: rabbitmqctl environment | grep -A 1 plugins_dir | grep -oE '"/.+"'
+  shell: rabbitmqctl environment | grep -A 1 plugins_dir | grep -oE '"/.+"' | cut -d ':' -f 2 | tr -d '"'
   register: rabbit_plugins_dir_string
-
-- name: Extract plugins_dir path and keep in variable
-  set_fact:
-    rabbit_plugins_dir: "{{ rabbit_plugins_dir_string.stdout[1:-1] }}"
 
 - name: Output RabbitMQ plugins path
   debug:
