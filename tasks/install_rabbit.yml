@@ -62,17 +62,17 @@
 
 - name: Output RabbitMQ plugins path
   debug:
-    msg: "{{ rabbit_plugins_dir }}"
+    msg: "{{ rabbit_plugins_dir.stdout }}"
 
 - name: Plugins to install debug output
   debug:
-    msg: "files/{{ item }}.ez -> {{ rabbit_plugins_dir }}"
+    msg: "files/{{ item }}.ez -> {{ rabbit_plugins_dir.stdout }}"
   with_items: '{{ rabbitmq_custom_plugins }}'
 
 - name: Place custom plugins into the plugins dir
   copy:
     src: "{{ item }}.ez"
-    dest: "{{ rabbit_plugins_dir }}"
+    dest: "{{ rabbit_plugins_dir.stdout }}"
   with_items: '{{ rabbitmq_custom_plugins }}'
 
 - name: Stop rabbitmq-server to add config file
