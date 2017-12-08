@@ -62,11 +62,6 @@
     path: /root/library
     state: directory
 
-- name: Copy ec2_search module into library dir
-  copy:
-    src: ec2_search.py
-    dest: /root/library/ec2_search.py
-
 - name: Put ansible.cfg into root dir to configure ansible library/role dirs
   copy:
     src: ansible.cfg
