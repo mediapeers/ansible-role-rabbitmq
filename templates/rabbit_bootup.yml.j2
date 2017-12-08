@@ -21,14 +21,14 @@
   tasks:
 
     - name: Get server hostnames for clustering
-      ec2_search:
-        key: "{{ rabbitmq_ec2_tag_key }}"
-        value: "{{ rabbitmq_ec2_tag_value }}"
+      ec2_instance_facts:
+        filters:
+          "tag:{{ rabbitmq_ec2_tag_key }}": "{{ rabbitmq_ec2_tag_value }}"
         region: "{{ rabbitmq_ec2_region }}"
       environment:
         AWS_ACCESS_KEY_ID:      "{{ rabbitmq_cluster_aws_access_key_id }}"
         AWS_SECRET_ACCESS_KEY:  "{{ rabbitmq_cluster_aws_secret_access_key }}"
-      register: nodes
+      register: results
 
     - name: Turn off rabbitmq but not the erlang process (clustering)
       command: "{{ '{{' }} item {{ '}}' }}"
@@ -37,9 +37,11 @@
         - rabbitmqctl reset
 
     - name: Try to join existing cluster (using all known nodes)
-      command: "rabbitmqctl join_cluster rabbit@{{ '{{' }} item['hostname'] {{ '}}' }}{{ rabbitmq_nodename_suffix }}"
-      with_items: "{{ '{{' }} nodes['info']|default([]) {{ '}}' }}"
-      when: nodes
+      command: "rabbitmqctl join_cluster rabbit@{{ '{{' }} item.private_dns_name {{ '}}' }}"
+      with_items: "{{ '{{' }} results.instances {{ '}}' }}"
+      when:
+        - results.instances is defined
+        - results.instances|length > 0
       ignore_errors: yes
 
     - name: turn rabbitmq back on

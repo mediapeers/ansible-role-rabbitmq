@@ -31,10 +31,9 @@ make_rabbitmq_user: true
 # RabbitMQ (erlang.cookie)
 rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF # replace with your own!
 rabbitmq_nodename: "rabbit"
-rabbitmq_hostname: "{{ ansible_hostname }}.ec2.internal"
 rabbitmq_nodename_suffix: .ec2.internal
 rabbitmq_ec2_tag_key: Name
-rabbitmq_ec2_tag_value: rabbitmq
+rabbitmq_ec2_tag_value: RabbitMQ
 
 # RabbitMQ user premissions
 rabbitmq_configure_priv: .*
