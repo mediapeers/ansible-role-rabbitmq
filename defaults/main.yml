@@ -10,7 +10,7 @@ rabbitmq_cookie: XPVTRGPZHAQYKQHKEBUF
 rabbitmq_nodename: "rabbit"
 rabbitmq_nodename_suffix: .ec2.internal
 rabbitmq_ec2_tag_key: Name
-rabbitmq_ec2_tag_value: rabbitmq
+rabbitmq_ec2_tag_value: RabbitMQ
 # Either 'all' or specific region, e.g. 'eu-central-1'
 rabbitmq_ec2_region: all
 
