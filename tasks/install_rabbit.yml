@@ -1,33 +1,32 @@
 # Tasks for installing and configuring RabbitMQ and custom plugins on the system
 
-- name: Add erlang apt repo key
+- name: Add Erlang apt repo key
   apt_key:
     url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
     state: present
-  when: use_erlang_solutions_repo
 
-- name: Add erlang apt repo (for Ubuntu)
+- name: Add Erlang apt repo, dependency for RabbitMQ (Ubuntu repo)
   apt_repository:
     repo: "deb http://packages.erlang-solutions.com/ubuntu {{ ansible_distribution_release }} contrib"
     state: present
     update_cache: yes
-  when: ansible_distribution == 'Ubuntu' and use_erlang_solutions_repo
+  when: ansible_distribution == 'Ubuntu'
 
-- name: Add erlang apt repo (for Debian)
+- name: Add Erlang apt repo, dependency for RabbitMQ (Debian repo)
   apt_repository:
-    repo: deb http://packages.erlang-solutions.com/debian wheezy contrib
+    repo: "deb http://packages.erlang-solutions.com/debian {{ ansible_distribution_release }} contrib"
     state: present
     update_cache: yes
-  when: ansible_distribution != 'Ubuntu' and use_erlang_solutions_repo
+  when: ansible_distribution == 'Debian'
 
-- name: Add rabbitmq apt repo key
+- name: Add RabbitMQ apt repo key
   apt_key:
     url: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
     state: present
 
-- name: Add rabbitmq apt repo
+- name: Add RabbitMQ apt repo (Debian/Ubuntu)
   apt_repository:
-    repo: deb http://www.rabbitmq.com/debian/ testing main
+    repo: "deb https://dl.bintray.com/rabbitmq/debian {{ ansible_distribution_release }} main"
     state: present
     update_cache: yes
 
@@ -36,27 +35,17 @@
   register: hostname_return
 - debug: msg={{ hostname_return.stdout }}
 
-- name: Install erlang and rabbitmq-server packages (from Erlang Solutions repo)
-  apt:
-    name: "{{ item }}"
-    state: present
-  when: ansible_os_family == 'Debian' and use_erlang_solutions_repo
-  with_items:
-    - esl-erlang={{ erlang_version }}
-    - rabbitmq-server={{ rabbitmq_version }}
-
 - name: Install rabbitmq-server package (from RabbitMQ repo)
   apt:
     name: rabbitmq-server
     state: latest
-  when: not use_erlang_solutions_repo
 
 - name: Start rabbitmq-server in order to use the rabbitctl command in next task
   service:
     name: rabbitmq-server
     state: started
 
-- name: Get rabbitmq plugins dir
+- name: Get RabbitMQ plugins dir
   shell: rabbitmqctl environment | grep -A 1 plugins_dir | grep -oE '"/.+"' | cut -d ':' -f 2 | tr -d '"'
   register: rabbit_plugins_dir
 
@@ -64,7 +53,7 @@
   debug:
     msg: "{{ rabbit_plugins_dir.stdout }}"
 
-- name: Plugins to install debug output
+- name: Plugins to install, debug output
   debug:
     msg: "files/{{ item }}.ez -> {{ rabbit_plugins_dir.stdout }}"
   with_items: '{{ rabbitmq_custom_plugins }}'
