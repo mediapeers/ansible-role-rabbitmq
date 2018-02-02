@@ -30,19 +30,32 @@
         AWS_SECRET_ACCESS_KEY:  "{{ rabbitmq_cluster_aws_secret_access_key }}"
       register: results
 
+    - name: Get hostname
+      shell: hostname
+      register: hostname_return
+
+    - name: Create fact with rabbit node name
+      set_fact:
+        node_name: "rabbit@{{ '{{' }} hostname_return.stdout {{ '}}' }}"
+
+    - name: Output node name (will be used for rabbitmqctl commands)
+      debug:
+        var: node_name
+
     - name: Turn off rabbitmq but not the erlang process (clustering)
       command: "{{ '{{' }} item {{ '}}' }}"
       with_items:
-        - rabbitmqctl stop_app
-        - rabbitmqctl reset
+        - rabbitmqctl -n {{ '{{' }} node_name {{ '}}' }} stop_app
+        - rabbitmqctl -n {{ '{{' }} node_name {{ '}}' }} reset
 
     - name: Try to join existing cluster (using all known nodes)
-      command: "rabbitmqctl join_cluster rabbit@{{ '{{' }} item.private_dns_name {{ '}}' }}"
+      command: "rabbitmqctl -n {{ '{{' }} node_name {{ '}}' }} join_cluster rabbit@{{ '{{' }} item.private_dns_name {{ '}}' }}"
       with_items: "{{ '{{' }} results.instances {{ '}}' }}"
       when:
         - results.instances is defined
         - results.instances|length > 0
+        - item.private_dns_name|length > 0
       ignore_errors: yes
 
     - name: turn rabbitmq back on
-      command: rabbitmqctl start_app
+      command: rabbitmqctl -n {{ '{{' }} node_name {{ '}}' }} start_app

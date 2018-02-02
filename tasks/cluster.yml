@@ -46,6 +46,7 @@
     - pip
     - jinja2
     - boto
+    - boto3
     - ansible
 
 - name: Clone this role onto remote machine to be executed on boot

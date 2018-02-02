@@ -103,4 +103,5 @@
     write_priv: "{{ rabbitmq_write_priv }}"
     tags: "{{ rabbitmq_default_user_tags }}"
     state: "{{ rabbitmq_user_state }}"
+    node: "rabbit@{{ hostname_return.stdout }}"
   when: make_rabbitmq_user
