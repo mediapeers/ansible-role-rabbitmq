@@ -12,6 +12,9 @@ before_install:
   - sudo apt-get update -qq
   # clean up all the weird rubies (none coming from apt packages) from system
   - sudo rm /usr/bin/ruby /usr/bin/gem
+  # clean up travis jdk_switcher which somehow makes rabbitmq install fail
+  # See https://github.com/travis-ci/travis-ci/issues/8906
+  - sudo rm -f /opt/jdk_switcher/jdk_switcher.sh
 
 install:
   # Install ruby for and serverspec gem as root
