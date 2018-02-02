@@ -2,7 +2,7 @@
 
 - name: Add Erlang apt repo key
   apt_key:
-    url: http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+    url: https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
     state: present
 
 - name: Add Erlang apt repo, dependency for RabbitMQ (Ubuntu repo)
