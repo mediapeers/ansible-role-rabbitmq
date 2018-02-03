@@ -4,6 +4,8 @@
   hosts: localhost
   vars:
     rabbitmq_cluster: false
+    # Tell rabbitmq role it's invoked by this cluster bootup play:
+    rabbitmq_cluster_bootup_play: true
     rabbitmq_ec2_region: {{ rabbitmq_ec2_region }}
     rabbitmq_ec2_tag_key: {{ rabbitmq_ec2_tag_key }}
     rabbitmq_ec2_tag_value: {{ rabbitmq_ec2_tag_value }}

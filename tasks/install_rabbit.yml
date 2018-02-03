@@ -93,7 +93,7 @@
     state: enabled
   when: rabbitmq_manage
 
-- name: Setup rabbitmq user with admin access
+- name: Setup rabbitmq user with admin access (providing node name in FQDN/cluster mode)
   rabbitmq_user:
     user: "{{ rabbitmq_default_user }}"
     password: "{{ rabbitmq_default_pass }}"
@@ -103,5 +103,21 @@
     write_priv: "{{ rabbitmq_write_priv }}"
     tags: "{{ rabbitmq_default_user_tags }}"
     state: "{{ rabbitmq_user_state }}"
-    node: "rabbit@{{ hostname_return.stdout }}"
-  when: make_rabbitmq_user
+    node: "{{ rabbitmq_nodename }}@{{ hostname_return.stdout }}"
+  when:
+    - rabbitmq_create_user
+    - rabbitmq_cluster_bootup_play
+
+- name: Setup rabbitmq user with admin access (no node name, localhost mode)
+  rabbitmq_user:
+    user: "{{ rabbitmq_default_user }}"
+    password: "{{ rabbitmq_default_pass }}"
+    vhost: "{{ rabbitmq_default_vhost }}"
+    configure_priv: "{{ rabbitmq_configure_priv }}"
+    read_priv: "{{ rabbitmq_read_priv }}"
+    write_priv: "{{ rabbitmq_write_priv }}"
+    tags: "{{ rabbitmq_default_user_tags }}"
+    state: "{{ rabbitmq_user_state }}"
+  when:
+    - rabbitmq_create_user
+    - not rabbitmq_cluster_bootup_play

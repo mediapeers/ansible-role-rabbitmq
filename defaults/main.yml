@@ -2,7 +2,7 @@
 # defaults file for rabbitmq
 rabbitmq_manage: true
 rabbitmq_cluster: false
-make_rabbitmq_user: true
+rabbitmq_create_user: true
 
 # Cluster information
 # RabbitMQ (erlang.cookie)
@@ -13,6 +13,12 @@ rabbitmq_ec2_tag_key: Name
 rabbitmq_ec2_tag_value: RabbitMQ
 # Either 'all' or specific region, e.g. 'eu-central-1'
 rabbitmq_ec2_region: all
+
+# No need to touch this! This is used by Ansible itself
+# to indicate if this role is invoked by the
+# cluster boot play created from template templates/rabbit_bootup.yml.j2
+# as it needs different behaviour in install_rabbit.yml tasks
+rabbitmq_cluster_bootup_play: false
 
 # Plugins
 rabbitmq_custom_plugins: []

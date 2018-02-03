@@ -2,9 +2,9 @@
 # tasks file for rabbitmq role
 
 - name: Prepare RabbitMQ boot image to install and cluster RabbitMQ on boot
-  include: cluster.yml
+  import_tasks: cluster.yml
   when: rabbitmq_cluster
 
 - name: Prepare RabbitMQ boot image with RabbitMQ fully installed/configured (not for clustering)
-  include: install_rabbit.yml
+  import_tasks: install_rabbit.yml
   when: not rabbitmq_cluster
