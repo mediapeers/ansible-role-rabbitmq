@@ -1,9 +1,11 @@
 [![Build Status](https://travis-ci.org/mediapeers/ansible-role-rabbitmq.svg?branch=master)](https://travis-ci.org/mediapeers/ansible-role-rabbitmq)
 
-
 # RabbitMQ
 RabbitMQ playbook that enables you to spin up a simple server or cluster them together. Currently only clustering on EC2 is supported.
 If you are integrating this into another repo make sure that rabbitmq goes in the roles folder.
+
+Configuration only works for RabbitMQ 3.7 and newer as this role already uses newer config format, see https://www.rabbitmq.com/configure.html#config-file
+This shouldn't be a problem though, as this role anyway installs the latest RabbitMQ version which is 3.7.4 already (on Apr. 2018).
 
 Also note that this role has to be run on bootup of new instances to hook them into the cluster!
 Hence in cluster.yml ansible & boto gets installed.

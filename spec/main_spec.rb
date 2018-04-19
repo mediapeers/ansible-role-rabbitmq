@@ -6,13 +6,16 @@ describe "RabbitMQ server setup" do
     it { should be_installed }
   end
 
-  describe file('/etc/rabbitmq/rabbitmq.config') do
+  describe file('/etc/rabbitmq/rabbitmq.conf') do
     it { should be_file }
     its(:content) { should include(
-      "{default_user,        <<\"#{ANSIBLE_VARS.fetch('rabbitmq_default_user', 'FAIL')}\">>}"
+      "default_user = #{ANSIBLE_VARS.fetch('rabbitmq_default_user', 'FAIL')}"
     ) }
     its(:content) { should include(
-      "{default_pass,        <<\"#{ANSIBLE_VARS.fetch('rabbitmq_default_pass', 'FAIL')}\">>}"
+      "default_pass = #{ANSIBLE_VARS.fetch('rabbitmq_default_pass', 'FAIL')}"
+    ) }
+    its(:content) { should include(
+      "default_user_tags.#{ANSIBLE_VARS.fetch('rabbitmq_default_user_tags', ['FAIL']).first} = true"
     ) }
   end
 
