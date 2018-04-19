@@ -22,11 +22,11 @@ default_permissions.write = .*
 
 {% for tag in rabbitmq_default_user_tags %}
 default_user_tags.{{ tag }} = true
-{%endfor%}
+{% endfor %}
 
 {% for user in rabbitmq_loopback_users %}
 loopback_users.{{ user }} = true
-{% endfor  %}
+{% endfor %}
 
 # Memory and disk usage warn levels:
 
