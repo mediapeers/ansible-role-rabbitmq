@@ -31,13 +31,19 @@ rabbitmq_user_state: present
 
 # RabbitMQ (rabbitmq.config)
 rabbitmq_amqp_port: 5672
+rabbitmq_log_level: info
+# Maximum number of channels to negotiate with clients.
+# Setting to 0 means "unlimited":
+rabbitmq_max_channels: 256
+
 rabbitmq_loopback_users:
   - guest
 rabbitmq_default_vhost: /
 rabbitmq_default_user: ansible
 rabbitmq_default_pass: ansible
-rabbitmq_default_user_tags: administrator
-rabbitmq_disk_free_limit: 0.7
+rabbitmq_default_user_tags:
+  - administrator
+rabbitmq_disk_free_limit: 100MB
 rabbitmq_high_watermark: 0.4
 rabbitmq_high_watermark_paging: 0.5
 
