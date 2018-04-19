@@ -6,7 +6,7 @@ describe "RabbitMQ server setup" do
     it { should be_installed }
   end
 
-  describe file('/etc/rabbitmq/rabbitmq.config') do
+  describe file('/etc/rabbitmq/rabbitmq.conf') do
     it { should be_file }
     its(:content) { should include(
       "default_user = #{ANSIBLE_VARS.fetch('rabbitmq_default_user', 'FAIL')}"
@@ -26,13 +26,13 @@ describe "RabbitMQ server setup" do
 
   if ANSIBLE_VARS.fetch('rabbitmq_manage', false)
     describe command('sudo rabbitmq-plugins list') do
-      its(:stdout) { should include('[E ] rabbitmq_management') }
+      its(:stdout) { should include('[E*] rabbitmq_management') }
     end
   end
 
   ANSIBLE_VARS.fetch('rabbitmq_custom_plugins', []).each do |plugin|
     describe command('sudo rabbitmq-plugins list') do
-      its(:stdout) { should include("[E ] #{plugin}") }
+      its(:stdout) { should include("[E*] #{plugin}") }
     end
   end
 
