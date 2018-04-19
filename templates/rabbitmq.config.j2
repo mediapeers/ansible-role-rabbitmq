@@ -1,16 +1,24 @@
+# {{ ansible_managed }}
+# RabbitMQ config file to be placed in /etc/rabbitmq/rabbitmq.config
+
+# RabbitMQ AMQP listening port:
 listeners.tcp.default = {{ rabbitmq_amqp_port }}
 
+# Maximum allowed channels, 0 means unlimited:
 channel_max = {{ rabbitmq_max_channels }}
 
+# Loglevel:
 log.file.level = {{ rabbitmq_log_level }}
 
+# User and vhost settings:
+
 default_vhost = {{ rabbitmq_default_vhost }}
-default_user  = {{ rabbitmq_default_user }}
-default_pass  = {{ rabbitmq_default_pass }}
+default_user = {{ rabbitmq_default_user }}
+default_pass = {{ rabbitmq_default_pass }}
 
 default_permissions.configure = .*
-default_permissions.read      = .*
-default_permissions.write     = .*
+default_permissions.read = .*
+default_permissions.write = .*
 
 {% for tag in rabbitmq_default_user_tags %}
 default_user_tags.{{ tag }} = true
@@ -20,7 +28,9 @@ default_user_tags.{{ tag }} = true
 loopback_users.{{ user }} = true
 {% endfor  %}
 
-vm_memory_high_watermark.relative     = {{ rabbitmq_high_watermark }}
+# Memory and disk usage warn levels:
+
+vm_memory_high_watermark.relative = {{ rabbitmq_high_watermark }}
 vm_memory_high_watermark_paging_ratio = {{ rabbitmq_high_watermark_paging }}
 
 disk_free_limit.absolute = {{ rabbitmq_disk_free_limit }}
