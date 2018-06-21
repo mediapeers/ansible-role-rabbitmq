@@ -17,7 +17,7 @@ before_install:
 
 install:
   # Install ruby for and serverspec gem as root
-  - sudo apt-add-repository ppa:brightbox/ruby-ng
+  - sudo apt-add-repository ppa:brightbox/ruby-ng -y
   - sudo apt-get update -qq
   - sudo apt-get install -y ruby2.3
   - sudo ln -s /usr/bin/ruby2.3 /usr/bin/ruby
