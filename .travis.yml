@@ -21,9 +21,6 @@ install:
   - sudo apt-get update -qq
   - sudo apt-get install -y ruby2.3
   - sudo ruby -v
-#  - sudo ln -s /usr/bin/ruby2.3 /usr/bin/ruby
-#  - sudo ln -s /usr/bin/gem2.3 /usr/bin/gem
-#  - sudo ln -s /usr/bin/rake2.3 /usr/bin/rake
 
   # Install Ansible through pip
   - pip install ansible
@@ -33,7 +30,7 @@ install:
 
   # Install serverspec
   - sudo ruby -v
-  - sudo gem install yaml serverspec
+  - sudo gem install serverspec
 
   # Add ansible.cfg to pick up roles path.
   - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
