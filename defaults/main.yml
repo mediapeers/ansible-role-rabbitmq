@@ -14,6 +14,12 @@ rabbitmq_ec2_tag_value: RabbitMQ
 # Either 'all' or specific region, e.g. 'eu-central-1'
 rabbitmq_ec2_region: all
 
+# Version pinning for Erlang versions to avoid incompatibilities with Rabbit
+# See https://www.rabbitmq.com/which-erlang.html
+# Before changing values here maek sure the versions exist in the Erlang repo!
+rabbitmq_erlang_apt_version: 20.3-1
+rabbitmq_esl_erlang_apt_version: 20.3.6
+
 # No need to touch this! This is used by Ansible itself
 # to indicate if this role is invoked by the
 # cluster boot play created from template templates/rabbit_bootup.yml.j2

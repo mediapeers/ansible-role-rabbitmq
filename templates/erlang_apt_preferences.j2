@@ -1,0 +1,11 @@
+# /etc/apt/preferences.d/erlang
+# Preference file to avoid erlang upgrades and thus missmatches between erlang and rabbitmq
+# See https://www.rabbitmq.com/which-erlang.html
+
+Package: erlang*
+Pin: version 1:{{ rabbitmq_erlang_apt_version }}
+Pin-Priority: 1000
+
+Package: esl-erlang
+Pin: version 1:{{ rabbitmq_esl_erlang_apt_version }}
+Pin-Priority: 1000
