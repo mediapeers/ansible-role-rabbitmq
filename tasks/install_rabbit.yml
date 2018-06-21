@@ -126,7 +126,7 @@
     configure_priv: "{{ rabbitmq_configure_priv }}"
     read_priv: "{{ rabbitmq_read_priv }}"
     write_priv: "{{ rabbitmq_write_priv }}"
-    tags: "{{ rabbitmq_default_user_tags }}"
+    tags: "{{ rabbitmq_default_user_tags|join(',') }}"
     state: "{{ rabbitmq_user_state }}"
   when:
     - rabbitmq_create_user

@@ -28,6 +28,10 @@ default_user_tags.{{ tag }} = true
 loopback_users.{{ user }} = true
 {% endfor %}
 
+{% if rabbitmq_loopback_users|length == 0 %}
+loopback_users = none
+{% endif %}
+
 # Memory and disk usage warn levels:
 
 vm_memory_high_watermark.relative = {{ rabbitmq_high_watermark }}
