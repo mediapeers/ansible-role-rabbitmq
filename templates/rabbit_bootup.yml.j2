@@ -48,7 +48,7 @@
       lineinfile:
         path: /etc/rabbitmq/rabbitmq-env.conf
         regexp: '^NODENAME='
-        line: "NODENAME={{ '{{' }} node_name '}}' }}"
+        line: "NODENAME={{ '{{' }} node_name {{ '}}' }}"
 
     - name: Turn off rabbitmq but not the erlang process (clustering)
       command: "{{ '{{' }} item {{ '}}' }}"
