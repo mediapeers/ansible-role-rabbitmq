@@ -38,7 +38,7 @@
     - libffi-dev
     - python-dev
 
-- name: Install boto & ansible to update clustering on the instance
+- name: Install Boto & Ansible to run Ansible when instance comes up
   pip:
     name: '{{ item }}'
     state: latest
@@ -47,6 +47,7 @@
     - jinja2
     - boto
     - boto3
+    - cryptography
     - ansible
 
 - name: Clone this role onto remote machine to be executed on boot
