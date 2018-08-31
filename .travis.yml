@@ -1,26 +1,21 @@
 ---
 sudo: required
-dist: trusty
+dist: xenial
 
 language: python
 python: "2.7"
 
-env:
-  - SITE=test.yml
-
 before_install:
-  # clean up all the weird rubies (none coming from apt packages) from system
-  - sudo rm /usr/bin/ruby /usr/bin/gem
+  - sudo apt-get update -qq
   # clean up travis jdk_switcher which somehow makes rabbitmq install fail
   # See https://github.com/travis-ci/travis-ci/issues/8906
   - sudo rm -f /opt/jdk_switcher/jdk_switcher.sh
 
 install:
   # Install ruby for and serverspec gem as root
-  - sudo apt-add-repository ppa:brightbox/ruby-ng -y
-  - sudo apt-get update -qq
-  - sudo apt-get install -y ruby2.3
+  - sudo apt-get install -y ruby
   - sudo ruby -v
+  - sudo gem install serverspec
 
   # Install Ansible through pip
   - pip install ansible
@@ -28,27 +23,26 @@ install:
 
   - hostname
 
-  # Install serverspec
-  - sudo ruby -v
-  - sudo gem install serverspec
-
   # Add ansible.cfg to pick up roles path.
   - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
 
 script:
   # Check the role/playbook's syntax.
-  - "ansible-playbook -i tests/inventory tests/$SITE --syntax-check"
+  - "ansible-playbook -i tests/inventory tests/test.yml --syntax-check"
 
   # Run the role/playbook with ansible-playbook.
-  - "ansible-playbook -i tests/inventory tests/$SITE --connection=local"
+  - "ansible-playbook -i tests/inventory tests/test.yml --connection=local"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   # Allow 7 'changes' for restarts and rabbit command interactions
   - >
-    ansible-playbook -i tests/inventory tests/$SITE --connection=local
+    ansible-playbook -i tests/inventory tests/test.yml --connection=local
     | grep -q 'changed=7.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
   # Runnin serverspec
   - sudo rake spec
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

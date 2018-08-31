@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mediapeers/ansible-role-rabbitmq.svg?branch=master)](https://travis-ci.org/mediapeers/ansible-role-rabbitmq)
+[![Build Status](https://travis-ci.com/mediapeers/ansible-role-rabbitmq.svg?branch=master)](https://travis-ci.com/mediapeers/ansible-role-rabbitmq)
 
 # RabbitMQ
 RabbitMQ playbook that enables you to spin up a simple server or cluster them together. Currently only clustering on EC2 is supported.
