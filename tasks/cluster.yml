@@ -39,15 +39,14 @@
 
 - name: Install Boto & Ansible to run Ansible when instance comes up
   pip:
-    name: '{{ item }}'
+    name:
+      - pip
+      - jinja2
+      - boto
+      - boto3
+      - cryptography
+      - ansible
     state: latest
-  with_items:
-    - pip
-    - jinja2
-    - boto
-    - boto3
-    - cryptography
-    - ansible
 
 - name: Clone this role onto remote machine to be executed on boot
   git:
