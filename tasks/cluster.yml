@@ -26,17 +26,16 @@
 
 - name: Install python-pip and other tools to install python packages/ansible
   apt:
-    name: '{{ item }}'
+    name:
+      - git-core
+      - build-essential
+      - python-pip
+      # build dependencies to install ansible pip package
+      - libyaml-dev
+      - libssl-dev
+      - libffi-dev
+      - python-dev
     state: present
-  with_items:
-    - git-core
-    - build-essential
-    - python-pip
-    # build dependencies to install ansible pip package
-    - libyaml-dev
-    - libssl-dev
-    - libffi-dev
-    - python-dev
 
 - name: Install Boto & Ansible to run Ansible when instance comes up
   pip:
