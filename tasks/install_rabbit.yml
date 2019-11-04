@@ -49,7 +49,7 @@
   apt:
     # NOTE: temp. version locking until necessary Erlang version has landed in the erlang apt repo to support latest RabbitMQ
     name: rabbitmq-server=3.7.17-1
-    state: latest
+    state: present
 
 - name: Start rabbitmq-server in order to use the rabbitctl command in next task
   service:
