@@ -4,7 +4,7 @@ galaxy_info:
   description: EC2 rabbitmq auto clustering
   company: nowait
   license: license (GPLv2, CC-BY, etc)
-  min_ansible_version: 2.4
+  min_ansible_version: 2.9
   platforms:
   - name: Ubuntu
     versions:

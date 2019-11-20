@@ -23,7 +23,7 @@
   tasks:
 
     - name: Get server hostnames for clustering
-      ec2_instance_facts:
+      ec2_instance_info:
         filters:
           "tag:{{ rabbitmq_ec2_tag_key }}": "{{ rabbitmq_ec2_tag_value }}"
         region: "{{ rabbitmq_ec2_region }}"
