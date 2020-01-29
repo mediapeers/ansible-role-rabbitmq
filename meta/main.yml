@@ -1,22 +1,24 @@
 ---
 galaxy_info:
-  author: michaeljs1990
-  description: EC2 rabbitmq auto clustering
-  company: nowait
-  license: license (GPLv2, CC-BY, etc)
+  author: Stefan Horning, michaeljs1990
+  description: RabbitMQ installation and configuration, optionally cluster on EC2.
+  company: Mediapeers GmbH
+  license: BSD
+
   min_ansible_version: 2.9
   platforms:
-  - name: Ubuntu
-    versions:
-    - all
-  - name: Debian
-    versions:
-    - all
-  categories:
-    - cloud
-    - cloud:ec2
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - aws
+    - ec2
+    - messaging
+    - message-queue
+    - rabbitmq
     - clustering
+
 dependencies: []
-  # List your role dependencies here, one per line.
-  # Be sure to remove the '[]' above if you add dependencies
-  # to this list.
