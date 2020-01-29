@@ -93,7 +93,7 @@
 
 - name: Enable custom plugins
   rabbitmq_plugin:
-    name: "{{item}}"
+    name: "{{ item }}"
     state: enabled
   with_items: '{{ rabbitmq_custom_plugins }}'
 
