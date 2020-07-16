@@ -1,3 +1,5 @@
+**Moved to https://github.com/mediafellows/ansible-role-rabbitmq**
+
 [![Build Status](https://travis-ci.com/mediapeers/ansible-role-rabbitmq.svg?branch=master)](https://travis-ci.com/mediapeers/ansible-role-rabbitmq)
 
 # RabbitMQ
